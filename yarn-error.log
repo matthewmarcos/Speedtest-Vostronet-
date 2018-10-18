@@ -1,0 +1,37 @@
+Arguments: 
+  /home/vagrant/.nvm/versions/node/v8.12.0/bin/node /usr/share/yarn/bin/yarn.js add global nodemon
+
+PATH: 
+  /home/vagrant/bin/jdk1.8.0_181/bin:/home/vagrant/.tmux:/home/vagrant/bin:/home/vagrant/.nvm:/home/vagrant/bin:/usr/local/bin:/home/vagrant/.nvm/versions/node/v8.12.0/bin:/home/vagrant/bin/jdk1.8.0_181/bin:/home/vagrant/.tmux:/home/vagrant/bin:/home/vagrant/.nvm:/home/vagrant/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/vagrant/Android/Sdk/tools:/home/vagrant/Android/Sdk/platform-tools:/usr/local/go/bin:/home/vagrant/.cargo/bin:/home/vagrant/.fzf/bin:/home/vagrant/Android/Sdk/tools:/home/vagrant/Android/Sdk/platform-tools:/usr/local/go/bin:/home/vagrant/.cargo/bin
+
+Yarn version: 
+  1.10.1
+
+Node version: 
+  8.12.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: EPROTO: protocol error, symlink '../../../which/bin/which' -> '/vagrant/VostronetServer/node_modules/cross-spawn/node_modules/.bin/which'
+
+npm manifest: 
+  {
+    "name": "vostronetserver",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node server.js"
+    },
+    "author": "Joseph Matthew Marcos",
+    "license": "ISC"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
