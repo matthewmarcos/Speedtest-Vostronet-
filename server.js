@@ -48,9 +48,8 @@ http.createServer(function(message, response) {
     }
     else {
         // 404
-        response.writeHead(404);
-        response.write('404 not found');
         response.end();
+        controller.notFound(message, response);
     }
 
 }).listen(PORT, function() {
