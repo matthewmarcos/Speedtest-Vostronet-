@@ -50,18 +50,17 @@
             req.abort();
         });
 
-
-        // Reduce is an ES5 Specification
-        // https://es5.github.io/#x15.4.4.21
+        /* Reduce is an ES5 Specification
+         * https://es5.github.io/#x15.4.4.21
+         */
         var totalBytesDownloaded = total_data_size.reduce(function(acc, val) {
             return acc + val;
         }, 0);
 
-        window.xx = total_data_size;
-
         // Reset the req counter
         total_data_size = [];
         requests = [];
+
         $speed.innerHTML = stringifyDownloaded(
             totalBytesDownloaded/TESTING_TIME
         ) + '/ second';
@@ -76,22 +75,20 @@
     function handleLoad(data) {
     /*This gets triggered if an xhr completes downloading. Spawn a new one.
     */
-        console.log('starting new xhr')
-        console.log(requests)
         var req = spawnXHR(requests.length);
         req.send();
     }
 
 
     function handleError(err) {
-        // Handle Error
+        // Ignore Error
     }
 
 
     function getMaxAsyncRequests() {
     /* MAX number of active async requests
-     https://stackoverflow.com/questions/985431/max-parallel-http-connections-in-a-browser
-     https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser/9851769
+     * https://stackoverflow.com/questions/985431/max-parallel-http-connections-in-a-browser
+     * https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser/9851769
      */
         var agent = navigator.userAgent;
 
@@ -101,11 +98,11 @@
 
         // 6 max async requests if good browser. Otherwise, 2.
         return (isChrome || isFirefox) ? 6 : 2;
-        // return 1;
     }
 
 
     function stringifyDownloaded(byteCount) {
+        // Converts byteCount into a human-readable string
         var suffix = ' MB';
         var value;
 
@@ -118,7 +115,6 @@
         }
 
         return String(value.toFixed(2)) + suffix;
-
     }
 
 

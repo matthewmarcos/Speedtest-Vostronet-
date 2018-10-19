@@ -15,7 +15,7 @@ $ node server.js
 * click the button to start the test
 
 ### How it works
-1. The front end spawns the max amount of `XMLHttpRequests` the browser can handle. (usually 6 on modern ones) to the `/test` endpoint on the server. The way I determine the user's browser is not 100% full proof and should be improved for real-world situations.
+1. The front end spawns the max amount of `XMLHttpRequests` the browser can handle. (usually 6 on modern ones) to the `/test` endpoint on the server. The way I determine the user's browser is not 100% fool-proof and should be improved for real-world situations.
 1. The `/test` endpoint returns 25MB worth of 'A' characters.
 1. The front end counts and sums the data received.
 1. There is a 5 second limit before all `XMLHttpRequest` instances are terminated.

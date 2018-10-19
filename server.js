@@ -9,7 +9,7 @@ var PORT = 3000;
 http.createServer(function(message, response) {
     var reqUrl = message.url;
 
-    // Hacky router to handle different urls
+    // Simple router to handle requests
     if(message.method === 'GET') {
         switch(reqUrl) {
             case '/test': {

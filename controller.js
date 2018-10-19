@@ -12,7 +12,6 @@ exports.sendFile = function sendFile(message, response, filename) {
 
     fs.readFile(relativeFilePath, function(err, contents) {
         if(err || !contents) {
-            console.log('Not found')
             return notFound(message, response);
         }
 
