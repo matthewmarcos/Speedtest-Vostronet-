@@ -1,13 +1,14 @@
 var path = require('path');
 var fs = require('fs');
 
-var PAYLOAD_SIZE = 25000000;  // 25e?
-var TEST_TIMEOUT = 20;  //Stream the buffers for only 20 seconds.
+var PAYLOAD_SIZE = 25000000;  // 25e6?
 
 
 exports.sendFile = function sendFile(message, response, filename) {
     // index.html default
     var relativeFilePath = path.posix.basename(filename) || 'index.html';
+    // Find files in in static folder
+    relativeFilePath = path.join('static', relativeFilePath);
 
     fs.readFile(relativeFilePath, function(err, contents) {
         if(err || !contents) {
@@ -42,4 +43,6 @@ function notFound(message, response) {
     response.end();
 }
 
-exports.notFound = notFound
+
+exports.notFound = notFound;
+

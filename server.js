@@ -5,32 +5,6 @@ var controller = require('./controller')
 
 var PORT = 3000;
 
-var GET = {
-    '/': function(message, res) {
-
-    }
-}
-
-function sampleMiddleware(req, res) {
-    req.aaa = true;
-    res.aaa = true;
-
-    return [req, res];
-}
-
-function middleWareComposer() {
-    var req = this.arguments[0];
-    var res = this.arguments[1];
-
-    var middleWares = this.arguments.slice(2);
-
-    middleWares.forEach(function(middleware) {
-        var temp = middleWare(req, res);
-        req = temp[0];
-        res = temp[1];
-    });
-
-}
 
 http.createServer(function(message, response) {
     var reqUrl = message.url;
@@ -48,7 +22,6 @@ http.createServer(function(message, response) {
     }
     else {
         // 404
-        response.end();
         controller.notFound(message, response);
     }
 

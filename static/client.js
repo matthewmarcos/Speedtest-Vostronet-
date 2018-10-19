@@ -12,17 +12,12 @@
     var $timeTotal = document.getElementById('time-total');
     var $speed = document.getElementById('speed');
 
-    var startTime;
-    var endTime;
-    var totalTime;
 
     function speedTest(ev) {
         for(var i = 0 ; i < ASYNC_REQUEST_COUNT ; i++) {
             total_data_size[i] = 0;
             var req = spawnXHR(requests.length);
         }
-
-        startTime = new Date();
 
         requests.forEach(function(req, idx) {
             req.send();
@@ -43,7 +38,7 @@
         req.addEventListener('progress', handleProgress.bind(this, idx));
         req.addEventListener('load', handleLoad);
         req.addEventListener('error', handleError);
-        req.addEventListener('abort', handleAbort.bind(this, idx));
+        req.addEventListener('abort', handleProgress.bind(this, idx));
         requests.push(req);
 
         return req;
@@ -55,10 +50,6 @@
             req.abort();
         });
 
-        endTime = new Date();
-
-        // Get total time in seconds
-        totalTime = endTime.getTime() - startTime.getTime() / 1000;
 
         // Reduce is an ES5 Specification
         // https://es5.github.io/#x15.4.4.21
@@ -71,7 +62,9 @@
         // Reset the req counter
         total_data_size = [];
         requests = [];
-        console.log(totalBytesDownloaded);
+        $speed.innerHTML = stringifyDownloaded(
+            totalBytesDownloaded/TESTING_TIME
+        ) + '/ second';
     }
 
 
@@ -90,12 +83,8 @@
     }
 
 
-    function handleError(ev) {
-    }
-
-
-    function handleAbort(idx, data) {
-        total_data_size[idx] = data.loaded;
+    function handleError(err) {
+        // Handle Error
     }
 
 
@@ -113,6 +102,23 @@
         // 6 max async requests if good browser. Otherwise, 2.
         return (isChrome || isFirefox) ? 6 : 2;
         // return 1;
+    }
+
+
+    function stringifyDownloaded(byteCount) {
+        var suffix = ' MB';
+        var value;
+
+        if(byteCount < 1000000) {
+            suffix = ' KB'
+            value = byteCount/1000;
+        }
+        else {
+            value = byteCount/1000000;
+        }
+
+        return String(value.toFixed(2)) + suffix;
+
     }
 
 
