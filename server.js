@@ -20,6 +20,9 @@ http.createServer(function(message, response) {
             }
         }
     }
+    else if(message.method === 'POST') {
+
+    }
     else {
         // 404
         controller.notFound(message, response);

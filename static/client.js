@@ -51,8 +51,8 @@
         });
 
         /* Reduce is an ES5 Specification
-         * https://es5.github.io/#x15.4.4.21
-         */
+        * https://es5.github.io/#x15.4.4.21
+        */
         var totalBytesDownloaded = total_data_size.reduce(function(acc, val) {
             return acc + val;
         }, 0);
