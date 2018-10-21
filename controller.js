@@ -1,6 +1,7 @@
+totalBytesData = {}; 
+
 var path = require('path');
 var fs = require('fs');
-totalBytesData = {}; 
 
 var PAYLOAD_SIZE = 25000000;  // 25e6?
 
@@ -53,7 +54,6 @@ exports.testUploadSpeed = function testUploadSpeed(message, response) {
 
     message.on('readable', function() {
         var body = String(message.read());
-        console.log(body.length)
         totalBytesData[testToken] += body.length;
     });
 
@@ -78,7 +78,7 @@ exports.uploadSpeedResults = function uploadSpeedResults(message, response) {
     }
 
     response.writeHead(200, {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/html'
     });
     response.write(String(totalBytesData[testToken]));
     response.end();
@@ -93,4 +93,3 @@ function notFound(message, response) {
 
 
 exports.notFound = notFound;
-

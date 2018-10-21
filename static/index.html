@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title></title>
 </head>
+
 <body>
     <p>
-    <span id="downloaded">Run a test</span>
+        <span>Run a test</span>
     </p>
     <p>
-    <div><span id="speed">0 B/second</span></div>
+        <div>Download Speed: <span id="download-speed">0 B/second</span></div>
     </p>
     <p>
-    <button id="test-speed">Test Speed!</button>
+        <button id="test-download-speed">Test Download Speed</button>
     </p>
 
-<!-- 'text/javascript' to override the default 'text/html' Content-Type metadata -->
-<script src="client.js" type="text/javascript"></script>
+    <hr>
+
+    <p>
+        <div>Upload Speed: <span id="upload-speed">0 B/second</span></div>
+    </p>
+    <p>
+        <button id="test-upload-speed">Test Upload Speed</button>
+    </p>
+
+
+
+    <!-- 'text/javascript' to override the default 'text/html' Content-Type metadata -->
+    <script src="client.js" type="text/javascript"></script>
 </body>
+
 </html>

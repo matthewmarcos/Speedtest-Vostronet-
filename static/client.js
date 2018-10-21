@@ -2,21 +2,24 @@
     var URL = '/test';
     var ASYNC_REQUEST_COUNT = 1;
     var TESTING_TIME = 5;  // Number of seconds
+    var TEST_TOKEN_LENGTH = 10;
+
 
     var total_data_size = [];
     var requests = [];
-    var $testSpeed = document.getElementById('test-speed');
     var $progress = document.getElementById('progress');
-    var $downloaded = document.getElementById('downloaded');
     var $timeElapsed = document.getElementById('time-elapsed');
     var $timeTotal = document.getElementById('time-total');
-    var $speed = document.getElementById('speed');
+    var $testDownloadSpeed = document.getElementById('test-download-speed');
+    var $downloadSpeed = document.getElementById('download-speed');
+    var $testUploadSpeed = document.getElementById('test-upload-speed');
+    var $uploadSpeed = document.getElementById('upload-speed');
 
 
-    function speedTest(ev) {
+    function downloadSpeedTest(ev) {
         for(var i = 0 ; i < ASYNC_REQUEST_COUNT ; i++) {
             total_data_size[i] = 0;
-            var req = spawnXHR(requests.length);
+            var req = spawnXHR('GET', requests.length, {});
         }
 
         requests.forEach(function(req, idx) {
@@ -24,28 +27,94 @@
         });
 
         // Force cancel the requests after some time
-        setTimeout(abortRequests, TESTING_TIME * 1000);
+        setTimeout(abortDownloadSpeedRequests, TESTING_TIME * 1000);
     }
 
 
-    function spawnXHR(idx) {
+    function uploadSpeedTest(ev) {
+        var payload = generateTestToken(5000000);
+        var customHeaders = {
+            'test-token': generateTestToken(TEST_TOKEN_LENGTH)
+        }
+
+        for(var i = 0 ; i < ASYNC_REQUEST_COUNT ; i++) {
+            total_data_size[i] = 0;
+            var req = spawnXHR('POST', requests.length, payload, customHeaders);
+        }
+
+        requests.forEach(function(req, idx) {
+            req.send(payload);
+        });
+
+        // Force cancel the requests after some time
+        setTimeout(abortUploadSpeedRequests.bind(null, customHeaders), TESTING_TIME * 1000);
+    }
+
+
+    function spawnXHR(method, idx, payload, customHeaders) {
         /*
          * idx referrs to the index of the requests array the
          * new xhr request will be
          */
+
+        var headers = customHeaders || {};
+        var headerKeys = Object.keys(headers);
+
         var req = new XMLHttpRequest();
-        req.open('GET', URL);
-        req.addEventListener('progress', handleProgress.bind(this, idx));
-        req.addEventListener('load', handleLoad);
+        // Setting the custom headers
+        req.open(method, URL);
+        headerKeys.forEach(function(key) {
+            req.setRequestHeader(key, headers[key]);
+        });
+        req.addEventListener('progress', handleDownloadProgress.bind(this, idx));
+        req.addEventListener('load', handleLoad.bind(null, payload, method, customHeaders));
         req.addEventListener('error', handleError);
-        req.addEventListener('abort', handleProgress.bind(this, idx));
+        req.addEventListener('abort', handleDownloadProgress.bind(this, idx));
         requests.push(req);
 
         return req;
     }
 
 
-    function abortRequests() {
+    function generateTestToken(len) {
+        var salt = '';
+        var choices = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+
+        for (var i = 0; i < len; i++) {
+            salt += choices.charAt(Math.floor(Math.random() * choices.length));
+        }
+
+        return salt + String(new Date().getTime());
+    }
+
+
+    function abortUploadSpeedRequests(header) {
+        var totalBytesDownloaded = 0;
+
+        // Abort alll existing requests
+        requests.forEach(function(req) {
+            req.abort();
+        });
+        requests = [];
+
+
+        // Ask server how much it received in all
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'text';
+        xhr.open('POST', '/results');
+        xhr.setRequestHeader('test-token', header['test-token']);
+        xhr.addEventListener('load', function() {
+            var data = xhr.response;
+            totalBytesDownloaded = Number(data);
+            $uploadSpeed.innerHTML = stringifyDownloaded(
+                totalBytesDownloaded/TESTING_TIME
+            ) + '/ second';
+        });
+        xhr.send();
+    }
+
+
+    function abortDownloadSpeedRequests() {
         requests.forEach(function(req) {
             req.abort();
         });
@@ -61,22 +130,22 @@
         total_data_size = [];
         requests = [];
 
-        $speed.innerHTML = stringifyDownloaded(
+        $downloadSpeed.innerHTML = stringifyDownloaded(
             totalBytesDownloaded/TESTING_TIME
         ) + '/ second';
     }
 
 
-    function handleProgress(idx, data) {
+    function handleDownloadProgress(idx, data) {
         total_data_size[idx] = data.loaded;
     }
 
 
-    function handleLoad(data) {
+    function handleLoad(payload, method, customHeaders, ev) {
     /*This gets triggered if an xhr completes downloading. Spawn a new one.
     */
-        var req = spawnXHR(requests.length);
-        req.send();
+        var req = spawnXHR(method, requests.length, payload, customHeaders);
+        req.send(payload);
     }
 
 
@@ -107,7 +176,7 @@
         var value;
 
         if(byteCount < 1000000) {
-            suffix = ' KB'
+            suffix = ' KB';
             value = byteCount/1000;
         }
         else {
@@ -120,9 +189,10 @@
 
     function start() {
         ASYNC_REQUEST_COUNT = getMaxAsyncRequests();
-        $testSpeed.addEventListener('click', speedTest);
+        $testDownloadSpeed.addEventListener('click', downloadSpeedTest);
+        $testUploadSpeed.addEventListener('click', uploadSpeedTest);
     }
 
     start();
 
-}())
+}());
