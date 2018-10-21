@@ -13,7 +13,7 @@ http.createServer(function(message, response) {
     if(message.method === 'GET') {
         switch(reqUrl) {
             case '/test': {
-                return controller.testSpeed(message, response);
+                return controller.testDownloadSpeed(message, response);
             }
             default: {
                 return controller.sendFile(message, response, reqUrl);
@@ -21,7 +21,14 @@ http.createServer(function(message, response) {
         }
     }
     else if(message.method === 'POST') {
-
+        switch(reqUrl) {
+            case '/test': {
+                return controller.testUploadSpeed(message, response);
+            }
+            case '/results': {
+                return controller.uploadSpeedResults(message, response);
+            }
+        }
     }
     else {
         // 404
